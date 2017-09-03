@@ -8,7 +8,7 @@ public class Youtuber{
     private static Scanner in=new Scanner(System.in);
     public static void main(String[] args){
         
-        int T=in.nextInt();
+        short T=in.nextShort();
         try{
             if(T>=1&&T<=1000)execute(T);
         }catch(Exception e){
@@ -49,7 +49,8 @@ public class Youtuber{
     };
     public static List deleteFans(List fans,int deletions){
         boolean removal=false;
-        for(int i=1;i<=fans.size();i++){
+        boolean homogeneity=false;
+        for(int i=1;i<=fans.size() && deletions!=0;i++){
             if(i!=fans.size() && (fans.get(i)<fans.get(i+1)) ){
                 fans.remove(i);
                 deletions--;
@@ -58,6 +59,13 @@ public class Youtuber{
             if(i==fans.size() && (deletions!=0&&removal!=true)){
                 fans.remove(fans.size());
                 deletions--;
+                homogeneity=true;
+                System.out.println(homogeneity);
+            };
+        };
+        if(homogeneity){
+            for(int i=0;i<deletions;i++){
+                fans.remove(fans.size());
             };
         };
         if(deletions!=0)return deleteFans(fans,deletions);

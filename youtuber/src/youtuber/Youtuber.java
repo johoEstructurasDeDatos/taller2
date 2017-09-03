@@ -7,26 +7,28 @@ import java.util.Scanner;
 public class Youtuber{
     private static Scanner in=new Scanner(System.in);
     public static void main(String[] args){
-        
         int T=in.nextInt();
         try{
             if(T>=1&&T<=1000)execute(T);
         }catch(Exception e){
-            /* 
+        };
+            /*
             List fans=new List();
             fans.add((byte)5);
             fans.add((byte)4);
             fans.add((byte)3);
             fans.add((byte)2);
             fans.add((byte)1);
-            fans.remove(1);
+            fans.get(5);
+            System.out.println("Aca obtine 5: ");
             fans.get(1);
+            System.out.println("Aca obtiene la list");
             fans.getList();
             fans.reset();
+            System.out.println("Aca no obtine nada");
             fans.getList();
-            System.out.println(fans.size());
-            */
-        };
+            System.out.println("Aca obtiene 0: "+fans.size());
+        */
     };
     
     public static void execute(int T){
@@ -35,7 +37,8 @@ public class Youtuber{
         for(int i=0;i<T;i++){
             N=in.nextInt();
             K=in.nextInt();
-            if(N>=1&&N<=100000 && K>=0&&K<N)deleteFans(fans(N),K).getListAndReset();
+            if(N>=1&&N<=100000 && K>=0&&K<N)deleteFans(fans(N),K).printAndReset();
+            System.gc();
         };
     };
     public static List fans(int N){
@@ -45,6 +48,8 @@ public class Youtuber{
             if(popy>=0&&popy<=100)fans.add(popy);
             else i=N;
         };
+        System.out.println("imprime fans: \n");
+        fans.getList();
         return fans;
     };
     public static List deleteFans(List fans,int deletions){
@@ -52,11 +57,13 @@ public class Youtuber{
         for(int i=1;i<=fans.size();i++){
             if(i!=fans.size() && (fans.get(i)<fans.get(i+1)) ){
                 fans.remove(i);
+                System.gc();
                 deletions--;
                 removal=true;
             };
             if(i==fans.size() && (deletions!=0&&removal!=true)){
                 fans.remove(fans.size());
+                System.gc();
                 deletions--;
             };
         };
@@ -65,48 +72,43 @@ public class Youtuber{
     };
 };
 
+
+
 class List{
+    
     private Node head;
-    private Node butt;
     private int size;
     
     public List(){
         this.head=null;
-        this.butt=null;
         this.size=0;
     };
+    //Añadir 
     public void add(byte item){
-        Node newItem=new Node(item);
-        
-        if(this.head==null){
-            this.head=newItem;
-            this.butt=this.head;
-            this.head.setNext(butt);
-        }else{
-            this.butt.setNext(newItem);
-            newItem.setNext(this.head);
-            this.butt=newItem;
+        if(this.head==null)this.head=new Node(item);
+        else{
+            Node temporal=this.head;
+            Node incoming=new Node(item);
+            incoming.setNext(temporal);
+            this.head=incoming;
         };
         this.size++;
     };
     
-    //Metodos  de Busquedas
-    public void search(byte item){
-        Node present=this.head;
-        for(int i=1;i<=this.size;i++){
-            if(present.getItem()==item){
-                System.out.println(present.getItem());
-                i=this.size;
-            }else present=present.getNext();
-        };
+    //Obtener
+    public int size(){
+        return this.size;
     };
-    public byte get(int position){
-        Node present=this.head;
-        for(int i=1;position<=this.size && i<=position;i++){
-            if(i==position)i=position;//System.out.println(present.getItem());
-            else present=present.getNext();
+    public byte head(){
+        return get(0);
+    };
+    public byte get(int index){
+        Node temporal=this.head;
+        for(int i=1;i<index;i++){
+            temporal=temporal.getNext();
         };
-        return present.getItem();
+        //System.out.println(temporal.getItem());
+        return temporal.getItem();
     };
     public void getList(){
         Node present=this.head;
@@ -116,52 +118,35 @@ class List{
         };
         System.out.println("");
     };
-    public void getListAndReset(){
-        getList();
-        reset();
-    };   
-    //Metodos de Modificaciones
-    public void set(int position,byte item){
-        Node present=this.head;
-        for(int i=1;position<=this.size && i<=position;i++){
-            if(i==position)present.setItem(item);
-            else present=present.getNext();
-        };
+    public boolean voidList(){
+        return(this.head==null)?true:false;
     };
-    public void remove(int position){
-        Node present=this.head;
-        Node before=this.butt;
-        for(int i=1;i<=position && position<=this.size;i++){
-            if(i==position){
-                if(present==this.head){
-                    this.head=this.head.getNext();
-                    this.butt.setNext(this.head);
-                }else if(present==this.butt){
-                    before.setNext(this.butt.getNext());
-                    this.butt=before;
-                }else{
-                    before.setNext(present.getNext());
-                };                
+    
+    //Modificar
+    public void remove(int index){
+        if(index==0)this.head=this.head.getNext();
+        else{
+            Node temporal=this.head;
+            for(int i=1;i<index;i++){
+                temporal=temporal.getNext();
             };
-            before=present;
-            present=present.getNext();
+            temporal.setNext(
+                temporal.getNext().getNext()
+            );    
         };
         size--;
+        System.gc();
     };
     public void reset(){
         this.head=null;
-        size=0;
+        this.size=0;
     };
-    //Acceder a caracterisiticas
-    public int size(){
-        return this.size;
+    public void printAndReset(){
+        getList();
+        reset();
+        System.gc();
     };
-    public Node head(){
-        return this.head;
-    };
-    public Node butt(){
-        return this.butt;
-    };
+
 };
 
 class Node{

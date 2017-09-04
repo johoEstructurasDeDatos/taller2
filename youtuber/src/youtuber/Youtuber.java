@@ -3,195 +3,95 @@ import java.util.Scanner;
 /**
  *
  * @author ElJoho
+8
+46 45 87 74 59 12 43 10 81 14 1 46 98 68 27 55 53 33 28 3 39 41 90 23 44 100 70 40 95 58 89 36 38 25 13 84 6 99 37 78 66 65 47 96 7 11 64 79
+15 10 28 17 78 41 39 44 15 37 99 61 59 9 63 82 54 
+21 19 1 16 19 100 15 90 9 20 40 30 26 86 50 31 60 67 20 15 100 17 99
+3 1 3 100 1
+5 2 19 12 3 4 17
+5 3 23 45 11 77 18
+5 4 0 0 0 0 0
+5 0 23 45 11 77 18
  */
 public class Youtuber{
     private static Scanner in=new Scanner(System.in);
-    public static void main(String[] args){
-        
-        short T=in.nextShort();
+    public static void main(String[] args){  
         try{
+            short T=in.nextShort();
             if(T>=1&&T<=1000)execute(T);
         }catch(Exception e){
-            /* 
-            List fans=new List();
-            fans.add((byte)5);
-            fans.add((byte)4);
-            fans.add((byte)3);
-            fans.add((byte)2);
-            fans.add((byte)1);
-            fans.remove(1);
-            fans.get(1);
-            fans.getList();
-            fans.reset();
-            fans.getList();
-            System.out.println(fans.size());
-            */
-        };
+        }
+            
     };
     
     public static void execute(int T){
-        int N;
-        int K;
         for(int i=0;i<T;i++){
-            N=in.nextInt();
-            K=in.nextInt();
-            if(N>=1&&N<=100000 && K>=0&&K<N)deleteFans(fans(N),K).getListAndReset();
+            int N=in.nextInt();
+            int K=in.nextInt();
+            byte fans[]=new byte[N];
+            if(N>=1&&N<=100000 && K>=0&&K<N)printAndDelete(deleteFans(fans(N),K));
         };
     };
-    public static List fans(int N){
-        List fans=new List();
+    public static byte[] fans(int N){
+        byte fans[]=new byte[N];
         for(int i=0;i<N;i++){
             byte popy=in.nextByte();
-            if(popy>=0&&popy<=100)fans.add(popy);
+            if(popy>=0&&popy<=100)fans[i]=popy;
             else i=N;
         };
         return fans;
     };
-    public static List deleteFans(List fans,int deletions){
-        boolean removal=false;
-        boolean homogeneity=false;
-        for(int i=1;i<=fans.size() && deletions!=0;i++){
-            if(i!=fans.size() && (fans.get(i)<fans.get(i+1)) ){
-                fans.remove(i);
+    public static byte[] deleteFans(byte[] fans,int deletions){
+        boolean delete=false, homogeneity=true;
+         //System.out.println("-----------new "+fans.length);
+        for(int i=1,j=0;i<fans.length && deletions!=0;i++){
+            if(i<fans.length && fans[j]<fans[i] && fans[j]!=-1){
+                fans[j]=-1;
+                j=i;
                 deletions--;
-                removal=true;
+                delete=true;
+                homogeneity=false;
+                //System.out.println("delete");
             };
-            if(i==fans.size() && (deletions!=0&&removal!=true)){
-                fans.remove(fans.size());
-                deletions--;
-                homogeneity=true;
-                System.out.println(homogeneity);
+            
+            if(fans[i]!=-1)
+                if(fans[j]>=fans[i]|| fans[j]==-1)
+                    j=i;
+            
+            if(homogeneity==true)
+                if(fans[j]>fans[i]||fans[j]<fans[i])
+                    homogeneity=false;
+            
+            if( i==fans.length-1 && deletions!=0 && delete==false){
+                //System.out.println("jump1");
+                for(int i1=fans.length-1 ;i1>-1; i1--){
+                    if(fans[i1]!=-1){
+                        fans[i1]=-1;
+                        deletions--;
+                        i1=-1;
+                    };
+                };
             };
         };
-        if(homogeneity){
-            for(int i=0;i<deletions;i++){
-                fans.remove(fans.size());
+        
+        if(deletions!=0 && homogeneity==true){
+            for(int i1=fans.length-1;deletions>0;i1--){
+                if(fans[i1]!=-1){
+                    fans[i1]=-1;
+                    deletions--;
+                    //System.out.println("jump2");
+                };
             };
         };
         if(deletions!=0)return deleteFans(fans,deletions);
         else return fans;
     };
-};
-
-class List{
-    private Node head;
-    private Node butt;
-    private int size;
-    
-    public List(){
-        this.head=null;
-        this.butt=null;
-        this.size=0;
-    };
-    public void add(byte item){
-        Node newItem=new Node(item);
-        
-        if(this.head==null){
-            this.head=newItem;
-            this.butt=this.head;
-            this.head.setNext(butt);
-        }else{
-            this.butt.setNext(newItem);
-            newItem.setNext(this.head);
-            this.butt=newItem;
-        };
-        this.size++;
-    };
-    
-    //Metodos  de Busquedas
-    public void search(byte item){
-        Node present=this.head;
-        for(int i=1;i<=this.size;i++){
-            if(present.getItem()==item){
-                System.out.println(present.getItem());
-                i=this.size;
-            }else present=present.getNext();
-        };
-    };
-    public byte get(int position){
-        Node present=this.head;
-        for(int i=1;position<=this.size && i<=position;i++){
-            if(i==position)i=position;//System.out.println(present.getItem());
-            else present=present.getNext();
-        };
-        return present.getItem();
-    };
-    public void getList(){
-        Node present=this.head;
-        for(int i=0;i<this.size;i++){
-            System.out.print(present.getItem()+" ");
-            present=present.getNext();
+    public static void printAndDelete(byte[] fans){
+        for(int i=0;i<fans.length;i++){
+            if(fans[i]!=-1)System.out.print(fans[i]+" ");
         };
         System.out.println("");
+        fans=null;
+        System.gc();
     };
-    public void getListAndReset(){
-        getList();
-        reset();
-    };   
-    //Metodos de Modificaciones
-    public void set(int position,byte item){
-        Node present=this.head;
-        for(int i=1;position<=this.size && i<=position;i++){
-            if(i==position)present.setItem(item);
-            else present=present.getNext();
-        };
-    };
-    public void remove(int position){
-        Node present=this.head;
-        Node before=this.butt;
-        for(int i=1;i<=position && position<=this.size;i++){
-            if(i==position){
-                if(present==this.head){
-                    this.head=this.head.getNext();
-                    this.butt.setNext(this.head);
-                }else if(present==this.butt){
-                    before.setNext(this.butt.getNext());
-                    this.butt=before;
-                }else{
-                    before.setNext(present.getNext());
-                };                
-            };
-            before=present;
-            present=present.getNext();
-        };
-        size--;
-    };
-    public void reset(){
-        this.head=null;
-        size=0;
-    };
-    //Acceder a caracterisiticas
-    public int size(){
-        return this.size;
-    };
-    public Node head(){
-        return this.head;
-    };
-    public Node butt(){
-        return this.butt;
-    };
-};
-
-class Node{
-    private byte item;
-    private Node next;
-
-    public Node(){
-    };
-    public Node(byte value){
-        this.item=value;
-    };
-    public void setItem(byte newItem){
-        this.item=newItem;
-    };
-    public byte getItem(){
-        return this.item;  
-    };
-    public void setNext(Node next){
-        this.next=next;  
-    };
-    public Node getNext(){
-        return this.next;
-    };
-    
 };
